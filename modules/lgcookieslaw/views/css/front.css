@@ -1,0 +1,354 @@
+#lgcookieslaw_banner {
+    display: none;
+    z-index: 10000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem 0;
+    color: #fff;
+}
+#lgcookieslaw_banner a {
+    text-decoration: none;
+    cursor: pointer;
+}
+#lgcookieslaw_banner .lgcookieslaw-link-container a.lgcookieslaw-link-button:not(:first-child) {
+    margin-left: 7px;
+}
+.lgcookieslaw-message {
+    display: block;
+    width: calc(80% - 0.5rem);
+    margin-right: 0.5rem;
+    float: left;
+}
+.lgcookieslaw-reject-all-button-enabled .lgcookieslaw-message {
+    width: calc(60% - 0.5rem);
+}
+.lgcookieslaw-message p {
+    color: #fff;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+.lgcookieslaw-button-container {
+    display: block;
+    width: 20%;
+    float: left;
+}
+.lgcookieslaw-reject-all-button-enabled .lgcookieslaw-button-container {
+    width: 40%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.lgcookieslaw-button-container #lgcookieslaw_reject_all,
+#lgcookieslaw_accept {
+    text-align: center;
+    min-height: 50px;
+    cursor: pointer;
+    font-size: 1.143rem;
+    text-transform: uppercase;
+}
+#lgcookieslaw_accept {
+    display: block;
+    width: 100%;
+}
+.lgcookieslaw-button-container #lgcookieslaw_reject_all,
+.lgcookieslaw-reject-all-button-enabled #lgcookieslaw_accept {
+    display: inline-block;
+    width: 49%;
+}
+
+.lgcookieslaw-modal {
+    background: #fff;
+    display: none;
+}
+.lgcookieslaw-modal-body {
+    padding: 15px;
+    display: block;
+    position: relative;
+    overflow: auto;
+    border-top: 4px solid #8BC954;
+}
+.lgcookieslaw-section {
+    padding: 15px;
+    display: block;
+    float: left;
+    width: 100%;
+    border: 1px solid #e4e3e3;
+    margin-bottom: 15px;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 0 10px rgba(0,0,0,.1);
+}
+.lgcookieslaw-section-name {
+    display: block;
+    float: left;
+    width: 80%;
+    font-weight: bold;
+    padding: 10px 15px;
+}
+.lgcookieslaw-section-description {
+    display: block;
+    float: left;
+    width: 100%;
+    padding: 10px 15px;
+}
+.lgcookieslaw-section-checkbox {
+    display: block;
+    float: left;
+    width: 20%;
+    text-align: right;
+    padding-right:25px;
+}
+.lgcookieslaw-modal-footer {
+    display: block;
+    width: 100%;
+    position: relative;
+    bottom: 0px;
+    border: 0px;
+    border-top: 1px solid #e4e3e3;
+    padding: 15px;
+    overflow: auto;
+}
+.lgcookieslaw-section-description ul li {
+    color: #5c5c5c;
+    position: relative;
+    width: 100%;
+    display: inline-block;
+    z-index: 1;
+    margin: 6px 0;
+    line-height: 1em;
+}
+.lgcookieslaw-section-description ul li:before {
+    content: "\2714";
+    color: #8BC954;
+    font-size: 1em;
+    position: absolute;
+    top: 0px;
+    left: -18px;
+    z-index: 2;
+    width: 12px;
+    height: 12px;
+}
+.lgcookieslaw-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+.lgcookieslaw-slider-option-left,
+.lgcookieslaw-slider-option-right {
+    position: absolute;
+    display: inline-block;
+    line-height: 34px;
+    font-weight: bold;
+}
+.lgcookieslaw-slider-option-left {
+    left: -35px
+}
+.lgcookieslaw-slider-option-right {
+    left: 70px;
+}
+.lgcookieslaw-switch input {
+    opacity: 0!important;
+    width: 0!important;
+    height: 0!important;
+}
+.lgcookieslaw-switch div.checker,
+.lgcookieslaw-switch div.checker span,
+.lgcookieslaw-switch div.checker input {
+    width: 0!important;
+    height: 0!important;
+}
+.lgcookieslaw-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+.lgcookieslaw-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+input:checked + .lgcookieslaw-slider {
+    background-color: #8BC954;
+}
+input:focus + .lgcookieslaw-slider {
+    box-shadow: 0 0 1px #8BC954;
+}
+input:checked + .lgcookieslaw-slider:before,
+.lgcookieslaw-slider-checked:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+.lgcookieslaw-modal-footer-left {
+    width: 20%;
+    float: left;
+    text-align: left;
+    overflow: auto;
+}
+.lgcookieslaw-modal-footer-right {
+    width: 80%;
+    float: left;
+    text-align: right;
+    overflow: auto;
+}
+.lgcookieslaw-modal .lgcookieslaw-cancel {
+    cursor: pointer;
+    background: none;
+    color: #000;
+}
+.lgcookieslaw-modal .lgcookieslaw-save,
+.lgcookieslaw-modal .lgcookieslaw-reject-all {
+    color: #fff;
+    background: #444;
+}
+.lgcookieslaw-modal .lgcookieslaw-accept-all {
+    color: #fff;
+    background: #8BC954;
+}
+
+.lgcookieslaw-message-floating {
+    width: 40%!important;
+    top: 50%!important;
+    left: 50%!important;
+    transform: translate(-50%, -50%);
+}
+.lgcookieslaw-message-floating .lgcookieslaw-message,
+.lgcookieslaw-message-floating .lgcookieslaw-button-container {
+    width: 100%;
+}
+.lgcookieslaw-message-floating .lgcookieslaw-message {
+    margin-right: 0;
+    float: none;
+}
+.lgcookieslaw-message-floating .lgcookieslaw-button-container {
+    text-align: center;
+    margin-top: 15px;
+    display: block;
+}
+.lgcookieslaw-message-floating #lgcookieslaw_reject_all,
+.lgcookieslaw-message-floating #lgcookieslaw_accept {
+    line-height: 10px;
+    height: 40px!important;
+}
+.lgcookieslaw-message-floating #lgcookieslaw_reject_all {
+    margin-bottom: 5px;   
+}
+
+.lgcookieslaw-overlay {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.5);    
+}
+
+@media only screen and (max-width: 991px) {
+    .lgcookieslaw-message-floating {
+        width: 55%!important;
+    }
+    .lgcookieslaw-button-container #lgcookieslaw_reject_all,
+    .lgcookieslaw-reject-all-button-enabled #lgcookieslaw_accept {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    .lgcookieslaw-reject-all-button-enabled .lgcookieslaw-button-container {
+        display: block;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .lgcookieslaw-message {
+        display: block;
+        float:left;
+        margin-bottom: 15px;
+        margin-right: 0;
+    }
+    .lgcookieslaw-button-container {
+        display: block;
+        float: left;
+    }
+    .lgcookieslaw-button-container,
+    .lgcookieslaw-reject-all-button-enabled .lgcookieslaw-button-container,
+    .lgcookieslaw-reject-all-button-enabled .lgcookieslaw-message,
+    .lgcookieslaw-message {
+        width: 100%;
+    }
+    #lgcookieslaw_banner {
+        padding: 0;
+    }
+    .lgcookieslaw-banner .container {
+        padding: 15px!important;
+    }
+    .lgcookieslaw-modal-footer-left {
+        width: 100%;
+        float: right;
+        text-align: center;
+    }
+    .lgcookieslaw-modal-footer-right {
+        width: 100%;
+        float: left;
+        text-align: center;
+    }
+    .lgcookieslaw-section-name {
+        width: 50%;
+    }
+    .lgcookieslaw-section-checkbox {
+        width: 50%;
+    }
+    .lgcookieslaw-message-floating {
+        width: 95%!important;
+    }
+    .lgcookieslaw-message-floating .lgcookieslaw-button-container {
+        margin-top: 0;
+    }
+    #lgcookieslaw_reject_all,
+    #lgcookieslaw_accept {
+        font-size: 1rem;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .lgcookieslaw-banner .container {
+        display: table-cell;
+        vertical-align: middle;
+        width: 60%;
+        max-width: 100%;
+        margin: auto;
+        padding: 0 20%!important;
+    }
+    .lgcookieslaw-message-floating .container {
+        padding-left: 15px!important;
+        padding-right: 15px!important;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width:1199px) {
+    .lgcookieslaw-banner.lgcookieslaw-reject-all-button-enabled .container {
+        padding: 0 5%!important;
+    }
+}
+
+@media only screen and (min-width: 992px) and (max-width:1199px) {
+    .lgcookieslaw-message-floating {
+        width: 45%!important;
+    }
+}

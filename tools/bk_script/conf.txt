@@ -1,0 +1,3 @@
+[mysqldump]
+user=gecps1
+password=$p5sY16u

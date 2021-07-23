@@ -1,0 +1,207 @@
+v0.2.109
+delete bon plan in megamenu
+
+v0.2.108
+ALTER TABLE `ps_asp_variations` ADD `guarantee_es` VARCHAR(255) NOT NULL AFTER `guarantee`;
+ALTER TABLE `ps_asp_variations` CHANGE `guarantee` `guarantee_fr` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
++garantie_es.csv
+
+v0.2.105
+set GECPS_CATS_EXCL to 524 for ES
+unassociate cat 524 from ES
+
+v0.2.104
+disable ps_crossselling
+
+v0.2.103
+hook gecps to displayOrderConfirmationAddresses
+
+
+v0.2.96
+ALTER TABLE `ps_asp_variations` CHANGE `encombrement` `encombrement` DECIMAL(10,2) NOT NULL;
+
+v0.2.94
+CREATE TABLE `hetj_dev`.`ps_asp_shipping_prices` ( `id` INT NOT NULL , `reference` VARCHAR(11) NOT NULL , `id_country` INT(5) NOT NULL , `price` DECIMAL(20,6) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `ps_asp_shipping_prices` ADD `id_product` INT(10) NOT NULL DEFAULT '0' AFTER `id`, ADD `id_product_attribute` INT(10) NOT NULL DEFAULT '0' AFTER `id_product`;
+ALTER TABLE `ps_asp_shipping_prices` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `ps_asp_variations` ADD `id_product` INT(10) NOT NULL DEFAULT '0' AFTER `id`, ADD `id_product_attribute` INT(10) NOT NULL DEFAULT '0' AFTER `id_product`;
+
+v0.2.91
+
+
+v0.2.90
+CREATE TABLE `hetj_dev`.`ps_asp_attributes` ( `id` INT(10) NOT NULL AUTO_INCREMENT , `name_fr` VARCHAR(255) NOT NULL ,`name_es` VARCHAR(255) NOT NULL , `id_category` INT(10) NOT NULL , `type` INT(1) NOT NULL , `position` INT(5) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+ALTER TABLE `ps_asp_attributes` ADD `id_feature` INT(10) NOT NULL AFTER `name`;
+CREATE TABLE `hetj_dev`.`ps_asp_attribute_values` ( `id_asp_attribute_value` INT(11) NOT NULL AUTO_INCREMENT , `reference` VARCHAR(11) NOT NULL , `id_asp_attribute` INT(11) NOT NULL , `value_fr` VARCHAR(500) NOT NULL , `value_es` VARCHAR(500) NOT NULL , PRIMARY KEY (`id_asp_attribute_value`)) ENGINE = InnoDB;
+ALTER TABLE `ps_asp_variations` ADD `name_fr` VARCHAR(255) NOT NULL AFTER `guarantee`;
+ALTER TABLE `ps_asp_variations` ADD `description_fr` TEXT NOT NULL AFTER `name_es`;
+ALTER TABLE `ps_asp_variations` ADD `description_short_fr` TEXT NOT NULL AFTER `description_es`;
+
+
+v0.2.75
+CREATE TABLE `hetj_dev`.`ps_asp_variations` ( `id` INT NOT NULL AUTO_INCREMENT , `reference` VARCHAR(11) NOT NULL , `shipping_delay` VARCHAR(255) NOT NULL , `encombrement` INT(10) NOT NULL , `guarantee` VARCHAR(255) NOT NULL , `name_es` VARCHAR(255) NOT NULL , `description_es` TEXT NOT NULL , `description_short_es` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+v0.2.72
+ALTER TABLE `ps_image` ADD `asp_file` VARCHAR(256) NOT NULL AFTER `id_image`;
+
+v0.2.71
+INSERT INTO `ps_configuration` (`id_configuration`, `id_shop_group`, `id_shop`, `name`, `value`, `date_add`, `date_upd`) VALUES (NULL, '1', '3', 'PS_LOGO', 'habitatyjardin.svg', '2021-05-28 14:15:35.000000', '2021-05-28 14:15:35.000000');
+
+v0.2.57
+ALTER TABLE `ps_category_lang` ADD `description2` TEXT NOT NULL AFTER `description`;
+
+v0.2.56
+CREATE TABLE `hetj_prod`.`ps_asp_order_trackings` ( `id_tracking` INT(20) NOT NULL , `id_order` INT(10) NOT NULL , `reference` VARCHAR(255) NOT NULL , `quantity` INT(5) NOT NULL , `carrier_name` VARCHAR(255) NOT NULL , `date` DATE NOT NULL , `url_tracking` TEXT NOT NULL , `tracking_number` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `ps_asp_order_trackings` ADD PRIMARY KEY( `id_tracking`);
+ALTER TABLE `ps_asp_order_trackings` ADD `id_product` INT(10) NOT NULL AFTER `reference`;
+ALTER TABLE `ps_asp_order_trackings` ADD `id_product_attribute` INT(10) NOT NULL AFTER `id_product`;
+
+v0.2.55
+CREATE TABLE `hetj_prod`.`ps_asp_product_reviews` ( `id_asp_product_review` INT(10) NOT NULL , `reference` VARCHAR(100) NOT NULL , `score` FLOAT NOT NULL , `date` DATETIME NOT NULL , `review` TEXT NOT NULL , `first_name` VARCHAR(255) NOT NULL , `last_name` VARCHAR(255) NOT NULL , `email` VARCHAR(255) NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `ps_asp_product_reviews` ADD PRIMARY KEY( `id_asp_product_review`);
+ALTER TABLE `ps_asp_product_reviews` CHANGE `date` `date` DATE NOT NULL;
+ALTER TABLE `ps_asp_product_reviews` ADD `id_product` INT(10) NOT NULL AFTER `id_asp_product_review`;
+
+
+v0.2.54
+ALTER TABLE `ps_asp_order_extras` ADD `date_depart` DATE NOT NULL AFTER `invoice`;
+ALTER TABLE `ps_asp_order_extras` ADD `tracking` TEXT NOT NULL AFTER `date_depart`;
+
+v0.2.53
+CREATE TABLE `hetj_prod`.`ps_asp_order_extras` ( `id_asp_order_invoice` INT(10) NOT NULL AUTO_INCREMENT , `id_order` INT(10) NOT NULL , `invoice` VARCHAR(300) NOT NULL , PRIMARY KEY (`id_asp_order_invoice`)) ENGINE = InnoDB;
+
+
+v0.2.42
+UPDATE `ps_product_shop` SET `redirect_type`= "302-category";
+UPDATE `ps_product` SET `redirect_type`= "302-category"
+
+v0.2.40
+ALTER TABLE `ps_order_state` ADD `payment_state_code` INT(10) NULL AFTER `paid`;
+
+v0.2.38
+CREATE TABLE `hetj_prod`.`ps_asp_shipping_codes` ( `id_shipping_code` INT(10) NOT NULL , `min` INT(10) NOT NULL , `max` INT(10) NOT NULL , `price` FLOAT NOT NULL , `price_wt` FLOAT NOT NULL , `weight` FLOAT NOT NULL ) ENGINE = InnoDB;
+ALTER TABLE `ps_asp_shipping_codes`
+  DROP PRIMARY KEY,
+   ADD PRIMARY KEY(
+     `id_shipping_code`);
+
+ALTER TABLE `ps_product_shop` DROP `shipping_code`;
+ALTER TABLE `ps_product` DROP `shipping_code`;
+ALTER TABLE `ps_product_attribute` DROP `shipping_code`
+ALTER TABLE `ps_product_attribute_shop` DROP `shipping_code`
+
+
+v0.0.9
+UPDATE `ps_tax_rule` SET `id_tax`=13 WHERE `id_tax_rules_group` = 4
+
+v0.0.14
+import warehouse demo 15
+
+v0.1.7
+UPDATE `ps_product` SET `online_only`=0 WHERE 1
+UPDATE `ps_product_shop` SET `online_only`=0 WHERE 1
+
+v0.2.7
+ALTER TABLE `ps_customer` ADD `pwtoken` VARCHAR(255) NOT NULL AFTER `passwd`;
+ALTER TABLE `ps_customer` ADD `asp_id_client` VARCHAR(100) NOT NULL AFTER `reset_password_validity`;
+ALTER TABLE `ps_customer` ADD `asp_cookie` VARCHAR(200) NOT NULL AFTER `asp_id_client`;
+
+v0.2.10
+ALTER TABLE `ps_customer` ADD `asp_sav_token` VARCHAR(100) NOT NULL AFTER `asp_cookie`;
+
+v0.2.13
+UPDATE `ps_product_lang` SET `available_now`='',`available_later`='';
+
+v0.2.14
+ALTER TABLE `ps_orders` ADD `asp_id_order` INT NOT NULL AFTER `date_upd`;
+
+v0.2.15
+ALTER TABLE `ps_customer` CHANGE `asp_sav_token` `asp_sav_token` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+
+v0.2.21
+CREATE TABLE `ps_asp_external_links` (
+  `id_links` int(11) NOT NULL,
+  `reference` varchar(20) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `link` varchar(250) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `ps_asp_external_links`
+  ADD PRIMARY KEY (`id_links`);
+
+
+v0.2.23
+CREATE TABLE `ps_asp_option_recomm` (
+  `id_option` int(11) NOT NULL,
+  `reference` varchar(20) NOT NULL,
+  `option_reference` varchar(20) NOT NULL,
+  `type_option` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `ps_asp_option_recomm`
+  ADD PRIMARY KEY (`id_option`);
+
+v0.2.25
+
+CREATE TABLE `ps_asp_pack` (
+  `id_pack` int(11) NOT NULL,
+  `reference` varchar(20) NOT NULL,
+  `encombrement` varchar(20) NOT NULL,
+  `online` int(1) NOT NULL
+  `ordre` int(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE `ps_asp_pack`
+  ADD PRIMARY KEY (`id_pack`);
+
+
+  CREATE TABLE `ps_asp_pack_product` (
+    `id_pack_product` int(11) NOT NULL,
+    `reference` varchar(20) NOT NULL,
+    `id_pack` varchar(20) NOT NULL,
+    `pvttc` float(10) NOT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  ALTER TABLE `ps_asp_pack_product`
+    ADD PRIMARY KEY (`id_pack_product`);
+
+v0.2.26
+CREATE TABLE `ps_asp_doc` (
+  `id_doc` int(10) NOT NULL,
+  `text` longtext NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `lang` varchar(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `ps_asp_doc`
+  ADD PRIMARY KEY (`id_doc`);
+
+  CREATE TABLE `ps_asp_doc_product` (
+    `id_doc_product` int(10) NOT NULL,
+    `id_doc` int(10) NOT NULL,
+    `reference` varchar(20) NOT NULL
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+  ALTER TABLE `ps_asp_doc_product`
+    ADD PRIMARY KEY (`id_doc_product`);
+
+v0.2.30
+CREATE TABLE `hetj_prod`.`ps_asp_private_sales`
+( `id_private_sale` INT(10) NOT NULL , `name` VARCHAR(200) NOT NULL ,
+`id_products` LONGTEXT NOT NULL , `start` DATETIME NOT NULL ,
+`end` DATETIME NOT NULL , `online` INT(1) NOT NULL , `date_add` DATETIME NOT NULL ) ENGINE = InnoDB;
+
+ALTER TABLE `ps_asp_private_sales` ADD PRIMARY KEY( `id_private_sale`);
+ALTER TABLE `ps_asp_private_sales` ADD `id_category` INT(10) NOT NULL AFTER `id_private_sale`;
+ALTER TABLE `ps_asp_private_sales` CHANGE `id_category` `id_category` INT(10) NULL DEFAULT NULL;
+
+v0.2.35
+ALTER TABLE `ps_product` ADD `shipping_code` INT(10) NOT NULL DEFAULT '0' AFTER `additional_shipping_cost`;
+ALTER TABLE `ps_product_shop`  ADD `shipping_code` INT(10) NOT NULL DEFAULT '0'  AFTER `additional_shipping_cost`;
+ALTER TABLE `ps_product_attribute`  ADD `shipping_code` INT(10) NOT NULL DEFAULT '0'  AFTER `price`
+ALTER TABLE `ps_product_attribute_shop`  ADD `shipping_code` INT(10) NOT NULL DEFAULT '0'  AFTER `price`
+
+UPDATE `ps_product` SET ps_product.`shipping_code`=ps_product_shop.additional_shipping_cost
+UPDATE `ps_product_shop` SET ps_product_shop.`shipping_code`=ps_product_shop.additional_shipping_cost
+
+UPDATE `ps_product` SET `additional_shipping_cost`= 0
+UPDATE `ps_product_shop` SET `additional_shipping_cost`= 0

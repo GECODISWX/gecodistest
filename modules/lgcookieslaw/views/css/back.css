@@ -1,0 +1,41 @@
+@font-face {
+  font-family: 'Glyphicons Halflings';
+
+  src: url('../fonts/glyphicons-halflings-regular.eot');
+  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+.icon:after,.icon:before
+{
+font-family:'Glyphicons Halflings';
+}
+.icon-caret-down:before, #content .process-icon-dropdown:before, .chosen-container-single .chosen-single div b:before {
+    content: "\f0d7"}
+.icon-trash-o:before, .icon-trash:before, #content .process-icon-delete:before, #content .process-icon-uninstall:before {
+    content: "\f014"}	
+.icon-search-plus:before, .icon-zoom-in:before {
+    content: "\f00e"}	
+.icon-refresh:before{
+    content: "\f021"}
+.process-icon-sitemap:before{
+    content: "\f0e8"}
+.icon-save:before, #content .process-icon-save:before, #content .process-icon-save-and-stay:before, #content .process-icon-save-and-preview:before, .icon-floppy-o:before, .icon-save:before, #content .process-icon-save:before, #content .process-icon-save-and-stay:before, #content .process-icon-save-and-preview:before {
+    content: "\f0c7"}
+[class^="process-icon-"] {
+    background: none repeat scroll center center / 26px auto transparent;
+    display: block;
+    font-size: 28px;
+    height: 30px;
+    margin: 0 auto;
+    width: 30px;
+}
+
+.ui-widget-header, .ui-widget-content,.ui-progressbar-overlay
+{
+background:none;
+border:0;
+}
+.bootstrap .table tbody > tr > td.generating
+{
+	font-size:0 !important;
+	background:url('../img/loading.gif') no-repeat center center #fff;
+}

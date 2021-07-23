@@ -1,0 +1,13 @@
+{shop_url}
+
+Hallo {firstname} {lastname},
+
+There are now less than {last_qty} of {product} in stock.
+
+Resterende voorraad: {qty}
+
+Vul uw inventaris aan, ga naar het gedeelte Catalogus> Voorraad van uw backoffice om uw voorraad te beheren.
+
+[{shop_name}]({shop_url})
+
+Powered by [PrestaShop](https://www.prestashop.com/?utm_source=marchandprestashop&utm_medium=e-mail&utm_campaign=footer_1-7)
