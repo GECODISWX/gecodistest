@@ -9,6 +9,18 @@ if(Tools::getValue('key') != 'zddzdjjdhffkljgkjfhmedfklgegjht' ) {
     die('Accès refusé');
 }
 
+$codes_r = Db::getInstance()->executeS('SELECT * FROM `ps_asp_shipping_codes`');
+
+function getShippingCostByShippingCode($codes_r,$code){
+  foreach ($codes_r as $key => $code_r) {
+    if ($code_r['min']<=$code && $code_r['max']>=$code) {
+      return $code_r['price'];
+    }
+  }
+  return 0;
+}
+
+
 $files = glob(_PS_ROOT_DIR_ . '/download/stock_files/*.xml');
 $diff_only = false;
 if (isset($_GET['diff_only']) && $_GET['diff_only']==1) {
@@ -99,9 +111,9 @@ foreach ($files as $file_path) {
       if ($i>1) {
         //continue;
       }
-      if (trim($product->Reference) !== '103094') {
+      if (trim($product->Reference) !== '106336') {
 
-        //continue;
+        // continue;
       }
       // if (!in_array(trim($product->Reference),$refs)) {
       //   //continue;
@@ -213,9 +225,10 @@ foreach ($files as $file_path) {
         }
 
         if (isset($product->AdditionnalShippingCost)) {
-          $additional_shipping_cost = str_replace(',', '.', trim($product->AdditionnalShippingCost));
-          $additional_shipping_cost = number_format(floatval($additional_shipping_cost), 2);
-          $objProduct->additional_shipping_cost = (int)str_replace(',', '', $additional_shipping_cost);
+          $shipping_code = (int)str_replace(',', '.', trim($product->AdditionnalShippingCost));
+          $additional_shipping_cost = getShippingCostByShippingCode($codes_r,$shipping_code);
+
+          $objProduct->additional_shipping_cost = $additional_shipping_cost;
         }
 
         if (isset($product->Unity)) {

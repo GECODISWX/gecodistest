@@ -1119,10 +1119,11 @@ class Gecps extends Module
     }
 
 
-    public function getProductCountryShippingPrice($id_p,$id_pa,$p=null,$variation_data=null){
+    public function getProductCountryShippingPrice($id_p,$id_pa,$p=null,$variation_data=null,$with_tax=false){
 
       $shop_country_iso= $this->getIsoByShopName($this->context->shop->name);
       $id_country = Country::getByIso($shop_country_iso);
+      $id_shop = $this->context->shop->id;
       if (!$p) {
         $p = new Product($id_p);
         if ($id_p) {
@@ -1145,8 +1146,18 @@ class Gecps extends Module
           $additional_shipping_cost = $p->additional_shipping_cost;
         }
       }
+      if ($with_tax) {
+        $c = Carrier::getCarriers($this->context->language->id)[0];
+        $sql = "SELECT t.rate  FROM `ps_tax_rule` trg ,ps_tax t WHERE `id_tax_rules_group` in ( select id_tax_rules_group from ps_carrier_tax_rules_group_shop where id_shop=$id_shop and id_carrier=".$c['id_carrier']." ) AND `id_country` = $id_country AND trg.id_tax = t.id_tax";
+        $r = Db::getInstance()->executeS($sql);
+        $rate = $r[0]['rate']/100;
 
-      return $additional_shipping_cost;
+        return $additional_shipping_cost*(1+$rate);
+      }
+      else {
+        return $additional_shipping_cost;
+      }
+
     }
 
     public function getVariationData($p){
@@ -1182,7 +1193,7 @@ class Gecps extends Module
       $currency = Currency::getCurrencyInstance((int) Context::getContext()->currency->id);
       $id_currency = $currency->id;
       $variation_data = $this->getVariationData($params['product']);
-      $additional_shipping_cost = $this->getProductCountryShippingPrice($params['product']->id_product,$params['product']->id_product_attribute,$params['product'],$variation_data);
+      $additional_shipping_cost = $this->getProductCountryShippingPrice($params['product']->id_product,$params['product']->id_product_attribute,$params['product'],$variation_data,true);
       $this->smarty->assign(
         array(
           'p' => $params['product'],
