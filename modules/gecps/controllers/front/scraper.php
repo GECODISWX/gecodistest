@@ -1186,35 +1186,63 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
 
   }
 
-  public function setDefaultCombinationAllProducts(){
-    $r = Db::getInstance()->executeS("SELECT * FROM ps_product_attribute");
-    $products_no_default = array();
-    $products_has_default = array();
-    foreach($r as $l){
-      if ($l['default_on']) {
-        $products_has_default[$l['id_product']] = $l['id_product'];
-        unset($products_no_default[$l['id_product']]);
+  public function setDefaultCombinationAllProductsAllShop(){
+    $c_shops=$this->params['c_shops'];
+    foreach ($c_shops as $c => $id_shop) {
+      $r = Db::getInstance()->executeS("SELECT * FROM ps_product_attribute_shop where id_shop=$id_shop");
+      $products_no_default = array();
+      $products_has_default = array();
+      foreach($r as $l){
+        // if ($l['id_product'] != 4295) {
+        //   continue;
+        // }
+        $stock = StockAvailable::getQuantityAvailableByProduct($l['id_product'],$l['id_product_attribute'],$id_shop);
+
+        if ($l['default_on']) {
+          if ($stock>0) {
+            $products_has_default[$l['id_product']] = $l['id_product'];
+            unset($products_no_default[$l['id_product']]);
+          }
+          else {
+            $products_no_default[$l['id_product']] = $l['id_product'];
+          }
+
+        }
+        else {
+          if (!isset($products_has_default[$l['id_product']])) {
+            $products_no_default[$l['id_product']] = $l['id_product'];
+          }
+
+        }
       }
-      else {
-        if (!isset($products_has_default[$l['id_product']])) {
-          $products_no_default[$l['id_product']] = $l['id_product'];
+
+
+      foreach($products_no_default as $product_no_default){
+        // if ($product_no_default != 4295) {
+        //   continue;
+        // }
+        $r = Db::getInstance()->executeS("
+          SELECT sa.id_product,sa.id_product_attribute
+          FROM ps_product_attribute_shop pas,ps_stock_available sa
+          where pas.id_product=".$product_no_default."
+          and pas.id_shop=$id_shop
+          and sa.id_shop=$id_shop
+          and pas.id_product = sa.id_product
+          and pas.id_product_attribute = sa.id_product_attribute
+          and sa.quantity >0
+          ORDER BY price asc,quantity desc");
+        if ($r) {
+          // var_dump($r);
+          $id_product_attribute = $r[0]['id_product_attribute'];
+          $id_product = $r[0]['id_product'];
+          //
+          Db::getInstance()->execute("UPDATE ps_product_attribute_shop SET default_on = NULL WHERE id_shop=$id_shop AND id_product=$id_product");
+          Db::getInstance()->update('product_attribute_shop',['default_on'=>1],"id_product_attribute=$id_product_attribute and id_shop=$id_shop");
         }
 
       }
     }
 
-    foreach($products_no_default as $product_no_default){
-      if ($product_no_default != 1484) {
-        //continue;
-      }
-      $r = Db::getInstance()->executeS("SELECT * FROM ps_product_attribute where id_product=".$product_no_default." ORDER BY price");
-      $id_product_attribute = $r[0]['id_product_attribute'];
-      $id_product = $r[0]['id_product'];
-
-      Db::getInstance()->update('product_attribute',['default_on'=>1],"id_product_attribute=".$id_product_attribute);
-      Db::getInstance()->execute("UPDATE ps_product_attribute_shop SET default_on = NULL WHERE id_product=".$id_product);
-      Db::getInstance()->update('product_attribute_shop',['default_on'=>1],"id_product_attribute=".$r[0]['id_product_attribute']);
-    }
 
   }
 
@@ -1699,7 +1727,7 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
     echo date('H:i:s').'<br>';
     $this->disableOfflineCombinationAllShop();
     echo date('H:i:s').'<br>';
-    $this->setDefaultCombinationAllProducts();
+    $this->setDefaultCombinationAllProductsAllShop();
     echo date('H:i:s').'<br>';
     $this->setDefaultImageAllProducts();
     echo date('H:i:s').'<br>';
