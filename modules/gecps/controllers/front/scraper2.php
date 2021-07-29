@@ -3,6 +3,7 @@ if (!class_exists('simple_html_dom_node')) {
   include(_PS_MODULE_DIR_."gecps/classes/simple_html_dom.php");
 }
 include(_PS_MODULE_DIR_."iqitelementor/src/IqitElementorCategory.php");
+include(_PS_MODULE_DIR_."iqitelementor/src/IqitElementorLanding.php");
 
 class gecpsscraper2ModuleFrontController extends ModuleFrontController
 {
@@ -20,7 +21,11 @@ class gecpsscraper2ModuleFrontController extends ModuleFrontController
 
   public function initParams(){
     $this->params =array(
-
+      'fo_base' => 'https://www.habitatetjardin.com',
+      'sitemap_url' => 'https://www.habitatetjardin.com/plan.html',
+      'c_shops' => array('fr'=>1,'es'=>3),
+      'iso3'=>['FRA'=>8,'ESP'=>6],
+      'iso'=>['FRA'=>8,'ESP'=>6]
     );
   }
 
@@ -67,7 +72,7 @@ class gecpsscraper2ModuleFrontController extends ModuleFrontController
   public function getBestSellerProductsByCategory($id_category,$id_shop,$limit){
     $sql = "SELECT ps.id_product FROM `ps_product_sale` ps, ps_category_product cp
             WHERE ps.id_product = cp.id_product
-            AND cp.id_category = 367
+            AND cp.id_category = $id_category
             ORDER BY ps.sale_nbr DESC LIMIT $limit";
     $r =  Db::getInstance()->executeS($sql);
     return $r;
@@ -156,7 +161,54 @@ class gecpsscraper2ModuleFrontController extends ModuleFrontController
     }
   }
 
-  public function test(){
+  public function getBestSellerProductsByCategory2($cats,$id_shop,$limit){
+    $id_products = [];
+    foreach ($cats as $key => $cat) {
+      $sql = "select DISTINCT psa.id_product from ps_product_sale psa, ps_product_shop psh where psa.id_product in
+              (SELECT id_product from ps_category_product where id_category = $cat)
+              AND psh.id_product = psa.id_product
+              AND psh.active = 1
+              AND psh.id_shop=$id_shop
+              Order by sum desc LIMIT 2";
+      $r = Db::getInstance()->executeS($sql);var_dump($cat,$r);
+      foreach ($r as $key => $l) {
+        if (!in_array($l['id_product'],$id_products)) {
+          $id_products[]=$l['id_product'];
+          break;
+        }
+      }
+    }
+    // var_dump($id_products);
+    return $id_products;
+  }
+
+  public function makeHomeTabProductSelection(){
+    $c_shops=$this->params['c_shops'];
+    foreach ($c_shops as $c => $id_shop) {
+      $i = Configuration::get("iqit_homepage_layout",null,null,$id_shop);
+      $cats = explode(',',Configuration::get("GECPS_HOME_TAB_CATS",null,null,$id_shop));
+      $id_langs = Language::getLanguages(true,$id_shop,true);
+      $id_lang = $id_langs[0];
+      $elementor = new IqitElementorLanding($i,$id_lang);
+      $data = json_decode($elementor->data,true);
+      if (!isset($data[1]['elements'][0]['elements'][0]['settings']['tabs'])) {
+        continue;
+      }
+      if (strpos('home_tab_section',$data[1]['settings']['css_classes'])===false) {
+        continue;
+      }
+      $tabs_data = $data[1]['elements'][0]['elements'][0]['settings']['tabs'];
+      foreach ($tabs_data as $key2 => $tab_data) {
+        if ($tab_data['product_source']!='ms') {
+          continue;
+        }
+        $id_products = $this->getBestSellerProductsByCategory2($cats,$id_shop,$tab_data['products_limit']);
+        $data[1]['elements'][0]['elements'][0]['settings']['tabs'][$key2]['products_ids']=$id_products;
+      }
+      $elementor->data = json_encode($data);
+      $elementor->save();
+
+    }
 
   }
 

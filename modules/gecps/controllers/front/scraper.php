@@ -1292,7 +1292,7 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
     $sql = "TRUNCATE `ps_product_sale`;";
     Db::getInstance()->execute($sql);
     $i = 0;
-    $int = 2000;
+    $int = 1000;
     $continue =1;
     $today = date('Y-m-d');
     $asp_product_sales = array();
@@ -1303,11 +1303,13 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
       }
       else {
         foreach ($r as $key => $l) {
+          $l['sum'] = (float)str_replace(',','.',$l['sum']);
           $p = self::getProductIdFromAspRef($l['fk_article']);
           if ($p['id_product']) {
             if (isset($asp_product_sales[$p['id_product']])) {
               $asp_product_sales[$p['id_product']]['count'] += $l['count'];
               $asp_product_sales[$p['id_product']]['sale_nbr'] += $l['sale_nbr'];
+              $asp_product_sales[$p['id_product']]['sum'] += $l['sum'];
             }
             else {
               $asp_product_sales[$p['id_product']] = $l;
@@ -1321,9 +1323,8 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
 
     $s = 'INSERT INTO `ps_product_sale` VALUE ';
     $n = 0;
-
     foreach ($asp_product_sales as $key => $l) {
-      $s .= '("'.$key.'","'.$l['count'].'","'.$l['sale_nbr'].'","'.$today.'"),';
+      $s .= '("'.$key.'","'.$l['count'].'","'.$l['sale_nbr'].'","'.$l['sum'].'","'.$today.'"),';
 
       $n++;
     }
@@ -1665,7 +1666,7 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
   }
 
   public function enableCategoriesES(){
-    
+
   }
 
 

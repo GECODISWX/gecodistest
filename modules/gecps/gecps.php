@@ -63,7 +63,8 @@ class Gecps extends Module
           "GECPS_PROMO_CAT",
           "GECPS_FREESHIPPING_CAT",
           "GECPS_CATS_SLIDERS",
-          "GECPS_CATS_EXCL"
+          "GECPS_CATS_EXCL",
+          "GECPS_HOME_TAB_CATS"
     		);
         foreach ($this->inputs as $key => $input) {
           $this->$input = Configuration::get($input);
