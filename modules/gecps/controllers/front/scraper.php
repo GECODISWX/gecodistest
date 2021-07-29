@@ -1247,39 +1247,43 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
   }
 
   public function setDefaultImageAllProducts(){
-    $r = Db::getInstance()->executeS("SELECT * FROM ps_product_attribute_shop WHERE id_shop=1 AND default_on =1");
-    foreach ($r as $key => $l) {
-      if ($l['id_product_attribute']!=235) {
-        //continue;
-      }
-      $product_image_r = Db::getInstance()->executeS("SELECT * FROM ps_image WHERE cover =1 AND id_product = ".$l['id_product']);
-      $product_attribute_image_r = Db::getInstance()->executeS("SELECT * FROM ps_product_attribute_image WHERE id_product_attribute = ".$l['id_product_attribute']);
+    $c_shops=$this->params['c_shops'];
+    foreach ($c_shops as $c => $id_shop) {
+      $r = Db::getInstance()->executeS("SELECT * FROM ps_product_attribute_shop WHERE id_shop=$id_shop AND default_on =1");
+      foreach ($r as $key => $l) {
+        // if ($l['id_product']!=4295) {
+        //   continue;
+        // }
+        $product_image_r = Db::getInstance()->executeS("SELECT * FROM ps_image_shop WHERE cover =1 AND id_shop=$id_shop AND id_product = ".$l['id_product']);
+        $product_attribute_image_r = Db::getInstance()->executeS("SELECT * FROM ps_product_attribute_image WHERE id_product_attribute = ".$l['id_product_attribute']);
 
-      if (!$product_attribute_image_r) {
-        continue;
-      }
+        if (!$product_attribute_image_r) {
+          continue;
+        }
 
-      if ($product_attribute_image_r[0]['id_image'] == 0) {
-        continue;
-      }
+        if ($product_attribute_image_r[0]['id_image'] == 0) {
+          continue;
+        }
 
-      if ($product_image_r) {
-        $id_product_image_cover = $product_image_r[0]['id_image'];
-      }
-      else{
-        $id_product_image_cover = 0;
-      }
+        if ($product_image_r) {
+          $id_product_image_cover = $product_image_r[0]['id_image'];
+        }
+        else{
+          $id_product_image_cover = 0;
+        }
 
-      if ($id_product_image_cover != $product_attribute_image_r[0]['id_image']) {
+        if ($id_product_image_cover != $product_attribute_image_r[0]['id_image']) {
 
-          //var_dump($product_image_r[0]['id_image'],$product_attribute_image_r[0]['id_image']);
-        Db::getInstance()->execute("UPDATE `ps_image` SET `cover` = NULL WHERE id_product=".$l['id_product']);
-        Db::getInstance()->execute("UPDATE `ps_image_shop` SET `cover` = NULL WHERE id_product=".$l['id_product']);
-        Db::getInstance()->update('image',['cover'=>1],"id_image=".$product_attribute_image_r[0]['id_image']);
-        Db::getInstance()->update('image_shop',['cover'=>1],"id_image=".$product_attribute_image_r[0]['id_image']);
+            //var_dump($product_image_r[0]['id_image'],$product_attribute_image_r[0]['id_image']);
+        //  Db::getInstance()->execute("UPDATE `ps_image` SET `cover` = NULL WHERE id_product=".$l['id_product']);
+          Db::getInstance()->execute("UPDATE `ps_image_shop` SET `cover` = NULL WHERE id_product=".$l['id_product']." and id_shop=$id_shop");
+        // Db::getInstance()->update('image',['cover'=>1],"id_image=".$product_attribute_image_r[0]['id_image']);
+          Db::getInstance()->update('image_shop',['cover'=>1],"id_image=".$product_attribute_image_r[0]['id_image']." and id_shop=$id_shop");
 
+        }
       }
     }
+
 
   }
 
