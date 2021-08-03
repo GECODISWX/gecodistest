@@ -30,10 +30,10 @@
 
 {block name='page_content_container'}
     <div class="row sitemap ">
-        <div class="col block-links">
+        {* <div class="col block-links">
           <h2 class="block-title"><span>{$our_offers}</span></h2>
           {include file='cms/_partials/sitemap-nested-list.tpl' links=$links.offers}
-        </div>
+        </div> *}
         <div class="col block-links">
           <h2 class="block-title"><span>{$categories}</span></h2>
           {include file='cms/_partials/sitemap-nested-list.tpl' links=$links.categories}
@@ -51,5 +51,3 @@
         </div>
     </div>
 {/block}
-
-

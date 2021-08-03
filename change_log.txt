@@ -1,3 +1,6 @@
+v0.3.5
+ALTER TABLE `ps_category_shop` ADD `active` TINYINT NOT NULL DEFAULT '1' AFTER `id_shop`;
+
 v0.3.2
 set GECPS_HOME_TAB_CATS 463,398,470,420,565,470,477,607,537,509,510,412
 ALTER TABLE `ps_product_sale` ADD `sum` FLOAT NOT NULL AFTER `sale_nbr`;

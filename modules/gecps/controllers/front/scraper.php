@@ -1655,49 +1655,94 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
   }
 
   public function disableEmptyCategoriesES(){
-    $sql = "SELECT
-        cs.id_category
-    FROM
-        `ps_category_shop` cs
-    WHERE
-        cs.id_shop = 3 AND cs.id_category NOT IN(0, 1, 2) AND cs.id_category NOT IN(
-        SELECT
-            id_category
-        FROM
-            (
-            SELECT
-                cp.id_category,
-                COUNT(cp.id_product) COUNT
-            FROM
-                ps_category_product cp,
-                ps_product_shop ps
-            WHERE
-                cp.id_product = ps.id_product AND ps.id_shop = 3 AND ps.active = 1
-            GROUP BY
-                cp.id_category
-            ORDER BY
-                `cp`.`id_category` ASC
-        ) s1
-    )";
+    $c_shops=$this->params['c_shops'];
+    foreach ($c_shops as $c => $id_shop) {
+      $sql = "SELECT
+          cs.id_category
+      FROM
+          `ps_category_shop` cs
+      WHERE
+          cs.id_shop = $id_shop AND cs.id_category NOT IN(0, 1, 2) AND cs.id_category NOT IN(
+          SELECT
+              id_category
+          FROM
+              (
+              SELECT
+                  cp.id_category,
+                  COUNT(cp.id_product) COUNT
+              FROM
+                  ps_category_product cp,
+                  ps_product_shop ps
+              WHERE
+                  cp.id_product = ps.id_product AND ps.id_shop = $id_shop AND ps.active = 1
+              GROUP BY
+                  cp.id_category
+              ORDER BY
+                  `cp`.`id_category` ASC
+          ) s1
+      )";
 
-    $r = Db::getInstance()->executeS($sql);
-    $in = "";
-    if ($r) {
-      foreach ($r as $key => $l) {
-        if ($l['id_category']!=426) {
-          continue;
+      $r = Db::getInstance()->executeS($sql);
+      $in = "";
+      if ($r) {
+        foreach ($r as $key => $l) {
+          if ($l['id_category']!=639) {
+            continue;
+          }
+          $in .= ",".$l['id_category'];
         }
-        $in .= ",".$l['id_category'];
+        $in = trim($in,",");
+        //$sql = "DELETE FROM ps_category_shop where id_shop=$id_shop and id_category in ($in)";
+
+        Db::getInstance()->update(
+          'category_shop',
+          ['active' => 0],
+          "id_category in ($in) AND id_shop=$id_shop"
+        );
       }
-      $in = trim($in,",");var_dump($in);
-      $sql = "DELETE FROM ps_category_shop where id_shop=3 and id_category in ($in)";
-      Db::getInstance()->execute($sql);
     }
+
 
 
   }
 
-  public function enableCategoriesES(){
+  public function enableNotEmptyCategoriesES(){
+    $c_shops=$this->params['c_shops'];
+    foreach ($c_shops as $c => $id_shop) {
+      $sql = "
+          SELECT
+              id_category
+          FROM
+              (
+              SELECT
+                  cp.id_category,
+                  COUNT(cp.id_product) COUNT
+              FROM
+                  ps_category_product cp,
+                  ps_product_shop ps
+              WHERE
+                  cp.id_product = ps.id_product AND ps.id_shop = $id_shop AND ps.active = 1
+              GROUP BY
+                  cp.id_category
+              ORDER BY
+                  `cp`.`id_category` ASC
+          ) s1
+          WHERE id_category IN (
+            SELECT id_category FROM ps_category_shop WHERE id_shop=$id_shop AND active=0
+            )";
+
+            $r = Db::getInstance()->executeS($sql);{
+            foreach ($r as $key => $l)
+              Db::getInstance()->update(
+                'category_shop',
+                ['active' => 1],
+                "id_category=".$l['id_category']." AND id_shop=$id_shop"
+              );
+            }
+    }
+
+
+
 
   }
 

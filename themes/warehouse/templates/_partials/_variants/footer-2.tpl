@@ -77,8 +77,8 @@
         <br><br>
         <h5 class="block-title">{l s='International' d='Shop.Warehousetheme'}</h5>
         <p>
-          <a href="/fr"><img src="/img/l/FR.jpg" alt="FR"></a>
-          <a href="/es"><img src="/img/l/ES.jpg" alt="ES"></a>
+          <a href="https://habitatetjardin.fr"><img src="/img/l/FR.jpg" alt="FR"></a>
+          <a href="https://habitatyjardin.es"><img src="/img/l/ES.jpg" alt="ES"></a>
         </p>
       </div>
     </div>

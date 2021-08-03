@@ -40,7 +40,7 @@ class Category extends CategoryCore
           'nleft' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'],
           'nright' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'],
           'level_depth' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'],
-          'active' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true],
+          'active' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool', 'required' => true, 'shop' => true],
           'id_parent' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedInt'],
           'id_shop_default' => ['type' => self::TYPE_INT, 'validate' => 'isUnsignedId'],
           'is_root_category' => ['type' => self::TYPE_BOOL, 'validate' => 'isBool'],
@@ -67,4 +67,119 @@ class Category extends CategoryCore
           'meta_keywords' => ['type' => self::TYPE_STRING, 'lang' => true, 'validate' => 'isGenericName', 'size' => 255],
       ],
   ];
+
+
+  /**
+   * Return current category childs.
+   *
+   * @param int $idLang Language ID
+   * @param bool $active return only active categories
+   *
+   * @return array Categories
+   */
+  public function getSubCategories($idLang, $active = true)
+  {
+      $sqlGroupsWhere = '';
+      $sqlGroupsJoin = '';
+      if (Group::isFeatureActive()) {
+          $sqlGroupsJoin = 'LEFT JOIN `' . _DB_PREFIX_ . 'category_group` cg ON (cg.`id_category` = c.`id_category`)';
+          $groups = FrontController::getCurrentCustomerGroups();
+          $sqlGroupsWhere = 'AND cg.`id_group` ' . (count($groups) ? 'IN (' . implode(',', $groups) . ')' : '=' . (int) Configuration::get('PS_UNIDENTIFIED_GROUP'));
+      }
+
+      $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
+  SELECT c.*, cl.`id_lang`, cl.`name`, cl.`description`, cl.`link_rewrite`, cl.`meta_title`, cl.`meta_keywords`, cl.`meta_description`
+  FROM `' . _DB_PREFIX_ . 'category` c
+  ' . Shop::addSqlAssociation('category', 'c') . '
+  LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl ON (c.`id_category` = cl.`id_category` AND `id_lang` = ' . (int) $idLang . ' ' . Shop::addSqlRestrictionOnLang('cl') . ')
+  ' . $sqlGroupsJoin . '
+  WHERE `id_parent` = ' . (int) $this->id . '
+  ' . ($active ? 'AND category_shop.`active` = 1' : '') . '
+  ' . $sqlGroupsWhere . '
+  GROUP BY c.`id_category`
+  ORDER BY `level_depth` ASC, category_shop.`position` ASC');
+
+
+      foreach ($result as &$row) {
+          $row['id_image'] = Tools::file_exists_cache($this->image_dir . $row['id_category'] . '.jpg') ? (int) $row['id_category'] : Language::getIsoById($idLang) . '-default';
+          $row['legend'] = 'no picture';
+      }
+
+      return $result;
+  }
+
+
+  /**
+   * Get children of the given Category.
+   *
+   * @param int $idParent Parent Category ID
+   * @param int $idLang Language ID
+   * @param bool $active Active children only
+   * @param bool $idShop Shop ID
+   *
+   * @return array Children of given Category
+   */
+  public static function getChildren($idParent, $idLang, $active = true, $idShop = false)
+  {
+      if (!Validate::isBool($active)) {
+          die(Tools::displayError());
+      }
+
+      $cacheId = 'Category::getChildren_' . (int) $idParent . '-' . (int) $idLang . '-' . (bool) $active . '-' . (int) $idShop;
+      if (!Cache::isStored($cacheId)) {
+          $query = 'SELECT c.`id_category`, cl.`name`, cl.`link_rewrite`, category_shop.`id_shop`
+    FROM `' . _DB_PREFIX_ . 'category` c
+    LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl ON (c.`id_category` = cl.`id_category`' . Shop::addSqlRestrictionOnLang('cl') . ')
+    ' . Shop::addSqlAssociation('category', 'c') . '
+    WHERE `id_lang` = ' . (int) $idLang . '
+    AND c.`id_parent` = ' . (int) $idParent . '
+    ' . ($active ? 'AND category_shop.`active` = 1' : '') . '
+    GROUP BY c.`id_category`
+    ORDER BY category_shop.`position` ASC';
+          $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
+          Cache::store($cacheId, $result);
+
+          return $result;
+      }
+
+      return Cache::retrieve($cacheId);
+  }
+
+  /**
+   * Check if the given Category has child categories.
+   *
+   * @param int $idParent Parent Category ID
+   * @param int $idLang Language ID
+   * @param bool $active Active children only
+   * @param bool $idShop Shop ID
+   *
+   * @return bool Indicates whether the given Category has children
+   */
+  public static function hasChildren($idParent, $idLang, $active = true, $idShop = false)
+  {
+      if (!Validate::isBool($active)) {
+          die(Tools::displayError());
+      }
+
+      $cacheId = 'Category::hasChildren_' . (int) $idParent . '-' . (int) $idLang . '-' . (bool) $active . '-' . (int) $idShop;
+      if (!Cache::isStored($cacheId)) {
+          $query = 'SELECT c.id_category, "" as name
+    FROM `' . _DB_PREFIX_ . 'category` c
+    LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl ON (c.`id_category` = cl.`id_category`' . Shop::addSqlRestrictionOnLang('cl') . ')
+    ' . Shop::addSqlAssociation('category', 'c') . '
+    WHERE `id_lang` = ' . (int) $idLang . '
+    AND c.`id_parent` = ' . (int) $idParent . '
+    ' . ($active ? 'AND category_shop.`active` = 1' : '') . ' LIMIT 1';
+          $result = (bool) Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
+          Cache::store($cacheId, $result);
+
+          return $result;
+      }
+
+      return Cache::retrieve($cacheId);
+  }
+
+
+
+
 }
