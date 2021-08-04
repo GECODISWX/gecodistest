@@ -1686,9 +1686,9 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
       $in = "";
       if ($r) {
         foreach ($r as $key => $l) {
-          if ($l['id_category']!=639) {
-            continue;
-          }
+          // if ($l['id_category']!=639) {
+          //   continue;
+          // }
           $in .= ",".$l['id_category'];
         }
         $in = trim($in,",");
