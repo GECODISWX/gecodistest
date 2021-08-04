@@ -1736,9 +1736,9 @@ class gecpstoolsModuleFrontController extends ModuleFrontController
         if (in_array(strtolower($product_names[1]),['sav',"colisage"])) {
           continue;
         }
-        if ($product->Reference->__toString() !== '95142') {
-          //continue;
-        }
+        // if ($product->Reference->__toString() !== '95142') {
+        //   //continue;
+        // }
 
         if (isset($_GET['ref']) && $_GET['ref'] && $product->Reference->__toString() !== $_GET['ref']) {
 
@@ -1746,7 +1746,7 @@ class gecpstoolsModuleFrontController extends ModuleFrontController
 
         }
 
-        //var_dump(count($product->Features->Feature));
+        //var_dump($product->Reference->__toString());
         if ($i>0) {
           //continue;
         }

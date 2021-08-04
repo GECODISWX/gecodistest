@@ -111,9 +111,9 @@ foreach ($files as $file_path) {
       if ($i>1) {
         //continue;
       }
-      if (trim($product->Reference) !== '106336') {
+      if (trim($product->Reference) !== '99222') {
 
-        // continue;
+         //continue;
       }
       // if (!in_array(trim($product->Reference),$refs)) {
       //   //continue;
