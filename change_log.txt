@@ -1,3 +1,8 @@
+v0.3.9
+ALTER TABLE `ps_asp_shipping_prices` ADD `id_shop` INT(3) NOT NULL AFTER `id_country`;
+TRUNCATE TABLE `ps_asp_shipping_prices`;
+ALTER TABLE `ps_product_attribute` DROP INDEX `product_default`;
+
 v0.3.8
 set product order to position asc
 

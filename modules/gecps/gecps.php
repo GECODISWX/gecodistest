@@ -1134,9 +1134,9 @@ class Gecps extends Module
       if (!$variation_data) {
         $variation_data = $this->getVariationData($p);
       }
-      $sql = "SELECT * FROM ps_asp_shipping_prices WHERE id_product=$id_p and id_product_attribute = $id_pa and id_country=$id_country";
+      $sql = "SELECT * FROM ps_asp_shipping_prices WHERE id_product=$id_p and id_product_attribute = $id_pa and id_shop=$id_shop";
       $shipping_price = Db::getInstance()->executeS($sql);
-      if ($shipping_price && $shipping_price[0]['id_country']==6) {
+      if (count($shipping_price)>0) {
         $additional_shipping_cost = $shipping_price[0]['price'];
       }
       else {

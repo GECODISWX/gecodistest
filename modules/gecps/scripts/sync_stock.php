@@ -47,6 +47,7 @@ foreach ($files as $file_path) {
 	} else {
     $xml_stock = null;
   }
+  Shop::setContext(Shop::CONTEXT_SHOP, (int)$id_shop);
 
   if ($diff_only) {
     $files_done = glob(_PS_ROOT_DIR_ . '/download/stock_files/done/*'.$file);
@@ -111,10 +112,12 @@ foreach ($files as $file_path) {
       if ($i>1) {
         //continue;
       }
-      if (trim($product->Reference) !== '99222') {
-
-         //continue;
+      if (isset($_GET['ref'])) {
+        if (trim($product->Reference) !== $_GET['ref']) {
+           continue;
+        }
       }
+
       // if (!in_array(trim($product->Reference),$refs)) {
       //   //continue;
       // }
@@ -161,8 +164,6 @@ foreach ($files as $file_path) {
       }
 
       if (isset($id_product) && $id_product) {
-
-        Shop::setContext(Shop::CONTEXT_SHOP, (int)$id_shop);
 
         $objProduct = new Product((int)$id_product, false, null, (int)$id_shop);
 
@@ -225,9 +226,7 @@ foreach ($files as $file_path) {
         }
 
         if (isset($product->AdditionnalShippingCost)) {
-          $shipping_code = (int)str_replace(',', '.', trim($product->AdditionnalShippingCost));
-          $additional_shipping_cost = getShippingCostByShippingCode($codes_r,$shipping_code);
-
+          $additional_shipping_cost = round(str_replace(',', '.', trim($product->AdditionnalShippingCost))*100)/100;
           $objProduct->additional_shipping_cost = $additional_shipping_cost;
         }
 
@@ -482,6 +481,31 @@ foreach ($files as $file_path) {
                 }
 
               }
+              if (isset($combinaison->AdditionnalShippingCost)) {
+                $additional_shipping_cost = round(str_replace(',', '.', trim($combinaison->AdditionnalShippingCost))*100)/100;
+                $sql_where =" id_product=".$objProduct->id."
+                AND id_product_attribute=".$id_product_attribute."
+                AND id_shop=$id_shop";
+                $r = Db::getInstance()->executeS("SELECT * FROM ps_asp_shipping_prices WHERE ".$sql_where);
+                if (count($r)>0) {
+                   Db::getInstance()->update(
+                     'asp_shipping_prices',
+                     ["price"=>$additional_shipping_cost],
+                     $sql_where
+                   );
+                }
+                else {
+                  Db::getInstance()->insert('asp_shipping_prices',[
+                    "id_product"=>$objProduct->id,
+                    "id_product_attribute"=>$id_product_attribute,
+                    "reference"=>$objProductAttribute->reference,
+                    "id_country"=>0,
+                    "id_shop"=>$id_shop,
+                    "price"=>$additional_shipping_cost,
+                  ]);
+                }
+              }
+
 
               $objProductAttribute->update();
 

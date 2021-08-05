@@ -1604,6 +1604,7 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
 
 
   public function syncAdditionalShippingFromAsp(){
+    return false;
     $sql = "TRUNCATE `ps_asp_shipping_prices`;";
     Db::getInstance()->execute($sql);
     $i = 0;

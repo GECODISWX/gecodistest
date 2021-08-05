@@ -1138,7 +1138,7 @@ class CategoryCore extends ObjectModel
 			' . Shop::addSqlAssociation('category', 'c') . '
 			WHERE `id_lang` = ' . (int) $idLang . '
 			AND c.`id_parent` = ' . (int) $idParent . '
-			' . ($active ? 'AND `active` = 1' : '') . '
+			' . ($active ? 'AND category_shop.`active` = 1' : '') . '
 			GROUP BY c.`id_category`
 			ORDER BY category_shop.`position` ASC';
             $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS($query);
