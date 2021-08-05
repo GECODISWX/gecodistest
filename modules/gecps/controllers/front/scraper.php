@@ -1374,6 +1374,9 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
     $guarantee_l = [];
     if (($handle = fopen(_PS_TRANSLATIONS_DIR_."gecodis/garantie_es.csv", "r")) !== FALSE) {
       while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+        if (!$data[0]) {
+          continue;
+        }
         if ($data[1]=="") {
           $data[1] = $data[0];
         }
