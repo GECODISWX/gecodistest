@@ -54,12 +54,12 @@
     </div>
     <hr>
     <div class="card-block card_address">
-      <div class="delivery_address_text"><p class="address_title"><strong>{l s="Delivery address" mod="gecps"}</strong></p></div>
-      <div class="invoice_address_text"><p class="address_title"><strong>{l s="Invoice address" mod="gecps"}</strong></p></div>
+      <div class="delivery_address_text"><p class="address_title"><strong>{l s="Delivery address %alias%" d='Shop.Theme.Checkout'  sprintf=['%alias%' => '']}</strong></p></div>
+      <div class="invoice_address_text"><p class="address_title"><strong>{l s="Invoice address %alias%" d='Shop.Theme.Checkout'  sprintf=['%alias%' => '']}</strong></p></div>
     </div>
     <hr>
     <div class="card-block card_carrier">
-      <div class="card_carrier_text"><p class="carrier_title"><strong>{l s="Carrier" mod="gecps"} : </strong></p></div>
+      <div class="card_carrier_text"><p class="carrier_title"><strong>{l s="Carrier" d='Shop.Theme.Checkout'} : </strong></p></div>
     </div>
     <hr>
 
