@@ -88,6 +88,7 @@ class gecpsorderModuleFrontController extends ModuleFrontController
       }
 
       $address_invoice_info = array(
+        'id_address' => $address_invoice->id,
         'city' => $address_invoice->city,
         'civility' => $gender->name[$this->params['id_fr']],
         'company' => $address_invoice->company,
@@ -107,6 +108,7 @@ class gecpsorderModuleFrontController extends ModuleFrontController
       );
 
       $address_delivery_info = array(
+        'id_address' => $address_delivery->id,
         'city' => $address_delivery->city,
         'civility' => $gender->name[$this->params['id_fr']],
         'company' => $address_delivery->company,
@@ -222,6 +224,7 @@ class gecpsorderModuleFrontController extends ModuleFrontController
           "price" => $line['total_price_tax_incl'],
           "price_additional_info" => null,
           "price_unit" => $line['unit_price_tax_incl'],
+          "price_unit_tax_excl" => $line['unit_price_tax_excl'],
           "product_medias" => array(),
           "product_sku" => $product->reference,
           "product_title" => $product->name[$this->params['id_fr']],
