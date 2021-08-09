@@ -12,7 +12,8 @@ class CustomerForm extends CustomerFormCore
   {
       $emailField = $this->getField('email');
       $customer_exists_asp = Customer::customerExistsAsp($emailField->getValue());
-      if ($customer_exists_asp) {
+      $customer = $this->getCustomer();
+      if (!$customer->id && $customer_exists_asp) {
           $emailField->addError($this->translator->trans(
               'The email is already used, please choose another one or sign in',
               [],
