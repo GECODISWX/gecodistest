@@ -22,7 +22,7 @@ foreach ($json->items as $key => $l) {
 ksort($items);
 
 foreach ($items as $key => $l) {
-  var_dump($l);
+  //var_dump($l);
   $t1 =  explode("T",$l->start->dateTime);
   $t1 = explode("+",$t1[1]);
   $t2 =  explode("T",$l->end->dateTime);
@@ -34,9 +34,5 @@ foreach ($items as $key => $l) {
   }
   $msg .="\r\n";
 }
-echo $msg;
-// use wordwrap() if lines are longer than 70 characters
-//$msg = wordwrap($msg,70);
 
-// send email
-mail("gecodiswx@gmail.com",$subject,$msg);
+//mail("gecodiswx@gmail.com",$subject,$msg);
