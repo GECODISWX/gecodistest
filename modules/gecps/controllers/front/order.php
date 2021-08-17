@@ -155,7 +155,7 @@ class gecpsorderModuleFrontController extends ModuleFrontController
       $l['leadtime_to_ship'] = null;//?
       $l['order_additional_fields'] = array(
         'customer_message' => $order_message,
-        'type_payment' => 'CB',//??
+      //  'type_payment' => 'CB',//??
       );
       $l['order_id'] = $this->module->makePrettyOrderId($order);
       $l['order_lines'] = array();

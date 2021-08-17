@@ -1363,11 +1363,28 @@ class Gecps extends Module
         return $retriever->getImage($object, $id_image);
     }
 
-    public function hookDisplaySubCategories($params){
+    public function displaySubCategoriesAsSlider(){
+      $this->smarty->assign(
+          array(
+            "sub_cats" => $this->getSubCategoriesData()
+          )
+        );
+
+      return $this->display(__FILE__, 'sub_cats_slider.tpl');
+    }
+
+    public function displaySubCategoriesAsGrid(){
+      $this->smarty->assign(
+          array(
+            "sub_cats" => $this->getSubCategoriesData()
+          )
+        );
+
+      return $this->display(__FILE__, 'sub_cats_gird.tpl');
+    }
+
+    public function getSubCategoriesData(){
       $id_lang = $this->context->language->id;
-      if (strpos(Configuration::get("GECPS_CATS_SLIDERS"),",".Tools::getValue('id_category').",")===false) {
-        return false;
-      }
       $current_cat = new Category(Tools::getValue('id_category'));
       $sub_cats = $current_cat->getSubCategories($id_lang,true);
       $sub_cats_array = [];
@@ -1391,14 +1408,20 @@ class Gecps extends Module
           $sub_cats_array[$key1][] = $sub_sub_cat;
         }
       }
+      return $sub_cats_array;
+    }
 
-      $this->smarty->assign(
-          array(
-            "sub_cats" => $sub_cats_array
-          )
-        );
+    public function hookDisplaySubCategories($params){
 
-      return $this->display(__FILE__, 'sub_cats_slider.tpl');
+      if (strpos(Configuration::get("GECPS_CATS_SLIDERS"),",".Tools::getValue('id_category').",")===false) {
+        return $this->displaySubCategoriesAsGrid();
+      }
+      else {
+        return $this->displaySubCategoriesAsSlider();
+      }
+
+
+
     }
 
     public function hookDisplayPrettyOrderId($params){

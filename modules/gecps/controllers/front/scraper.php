@@ -995,6 +995,35 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
     }
   }
 
+  public function getCategoryImageFromAsp(){
+    $last = $this->getFromAspPsapi('count_box');
+    $count = (int)$last[0]['count'];
+    $int = 1000;
+
+    for ($i=0; $i < ($count); $i+=$int) {
+
+      $r = $this->getFromAspPsapi("box&from=$i&int=$int");
+      $categories_boxes = array();
+      if ( count($r)>0) {
+
+        $n = 0;
+        foreach ($r as $key => $l) {
+          if ($l['fk_categorie'] != 1550) {
+            //continue;
+          }
+          $n++;
+          $cat = Db::getInstance()->executeS('SELECT id_category from ps_category_lang WHERE name like "'.$l['nom'].'" AND id_lang = 1 AND id_shop =1');
+          if ($cat) {
+            $categories_boxes[$cat[0]['id_category']][] = $l;
+
+          }
+        }
+
+      }
+    }
+    var_dump($categories_boxes);
+  }
+
   public function syncCategoryBoxes(){
     return false;
     $last = $this->getFromAspPsapi('count_box');
@@ -1022,7 +1051,7 @@ class gecpsscraperModuleFrontController extends ModuleFrontController
 
       }
     }
-    $this->makeCategoriesBoxes($categories_boxes);
+    //$this->makeCategoriesBoxes($categories_boxes);
   }
 
   public function makeCategoriesBoxes($categories_boxes){
